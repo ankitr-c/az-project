@@ -1,0 +1,26 @@
+version: '3.9'  # Latest supported version of Docker Compose
+
+services:
+  mysql:
+    image: mysql:latest
+    ports:
+      - "8000:3306"  # Exposing MySQL port 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root  # Set MySQL root password
+    volumes:
+      - ./mysql-data:/var/lib/mysql  # Mount the host directory as a volume
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin  # Using the phpMyAdmin image
+    ports:
+      - "8080:80"  # Exposing phpMyAdmin UI on port 8080
+    environment:
+      PMA_HOST: mysql  # Point phpMyAdmin to the MySQL container
+      PMA_USER: root  # User for phpMyAdmin
+      PMA_PASSWORD: root  # Password for the root user
+    depends_on:
+      - mysql  # Ensure MySQL starts before phpMyAdmin
+
+volumes:
+  mysql_data:
+    driver: local  # Volume for MySQL

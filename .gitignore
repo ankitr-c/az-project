@@ -1,0 +1,6 @@
+database/mysql-data
+database\mysql-data
+database/mysql-data/auto.cnf
+database/mysql-data/binlog.index
+database/mysql-data/ib_buffer_pool
+database/mysql-data/mysql.sock
