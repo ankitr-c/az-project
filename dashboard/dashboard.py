@@ -4,7 +4,7 @@ import requests
 
 app = Flask(__name__)
 # URL of the backend API
-API_URL = "http://localhost:5000/get_data"
+API_URL = "http://127.0.0.1:5000/get_data"
 
 
 @app.route('/health')

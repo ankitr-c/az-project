@@ -2,19 +2,35 @@
 from flask import Flask, request, jsonify
 import mysql.connector
 from flask_cors import CORS
+from get_creds import AzureKeyVaultManager
 
 app = Flask(__name__)
 CORS(app)
 
 
+try:
+    kv_manager = AzureKeyVaultManager()    
+    credentials = kv_manager.get_credentials()
+except Exception as e:
+    print(f"Error initializing AzureKeyVaultManager: {e}")
+
+
 # Database configuration
 db_config = {
-    'user': 'root',
-    'password': 'root',
-    'host': 'localhost',
-    'port': 8000,
-    'database': 'azproject'  # Replace with your database name
+    'user': credentials['username'],
+    'password': credentials['password'],
+    'host': credentials['db_endpoint'],
+    'port': credentials['port'],
+    'database': credentials['database']  # Replace with your database name
 }
+
+# db_config = {
+#     'user': 'root',
+#     'password': 'root',
+#     'host': 'localhost',
+#     'port': 8000,
+#     'database': 'azproject'  # Replace with your database name
+# }
 
 
 # Connect to the database
@@ -62,6 +78,15 @@ def get_data():
         return jsonify(data), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
+    
+    
+    
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0',port=5000)
+    try:
+        app.run(debug=True, host='0.0.0.0',port=5000)
+    finally:
+        # Ensure proper cleanup when shutting down
+        kv_manager.stop()
+
+# if __name__ == '__main__':
+#     app.run(debug=True, host='0.0.0.0',port=5000)

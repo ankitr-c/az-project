@@ -4,3 +4,7 @@ database/mysql-data/auto.cnf
 database/mysql-data/binlog.index
 database/mysql-data/ib_buffer_pool
 database/mysql-data/mysql.sock
+master_backend/__pycache__/
+database/__pycache__/
+vpn
+

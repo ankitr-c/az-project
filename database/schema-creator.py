@@ -1,16 +1,23 @@
 import mysql.connector
 from mysql.connector import Error
+from get_creds import AzureKeyVaultManager
+
+try:
+    kv_manager = AzureKeyVaultManager()    
+    credentials = kv_manager.get_credentials()
+except Exception as e:
+    print(f"Error initializing AzureKeyVaultManager: {e}")
 
 def create_and_populate_database():
-    try:
+    try:            
         # Connect to MySQL server
         connection = mysql.connector.connect(
-            host='localhost',  # Replace with your MySQL server address
-            user='root',  # Replace with your MySQL username
-            password='root',  # Replace with your MySQL password
-            port=8000
+            host=credentials['db_endpoint'],  # Replace with your MySQL server address
+            user=credentials['username'],  # Replace with your MySQL username
+            password=credentials['password'],  # Replace with your MySQL password
+            port=credentials['port']
         )
-
+        print("Connected to MySQL server.")
         if connection.is_connected():
             cursor = connection.cursor()
             
@@ -54,4 +61,8 @@ def create_and_populate_database():
             print("MySQL connection closed.")
 
 if __name__ == "__main__":
-    create_and_populate_database()
+    try:
+        create_and_populate_database()
+    finally:
+        # Ensure proper cleanup when shutting down
+        kv_manager.stop()
